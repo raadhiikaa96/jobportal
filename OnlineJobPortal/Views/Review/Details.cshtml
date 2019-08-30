@@ -1,0 +1,107 @@
+﻿@model OnlineJobPortal.Models.Review
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Review</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.One)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.One)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Two)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Two)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Three)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Three)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Four)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Four)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Five)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Five)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Six)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Six)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Seven)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Seven)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Overall)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Overall)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ReviewID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
