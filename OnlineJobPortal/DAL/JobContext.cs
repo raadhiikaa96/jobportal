@@ -24,5 +24,9 @@ namespace OnlineJobPortal.DAL
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             //base.OnModelCreating(modelBuilder);
         }
+
+        public System.Data.Entity.DbSet<OnlineJobPortal.Models.UserLogin> UserLogins { get; set; }
+
+        public System.Data.Entity.DbSet<OnlineJobPortal.Models.ResetPassword> ResetPasswords { get; set; }
     }
 }

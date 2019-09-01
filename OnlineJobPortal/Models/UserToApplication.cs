@@ -8,8 +8,8 @@ namespace OnlineJobPortal.Models
     public class UserToApplication
     {
         public int UserToApplicationID { get; set; }
-        public string UserID { get; set; }
-        public string ApplicationID { get; set; }
+        public int UserID { get; set; }
+        public int ApplicationID { get; set; }
 
         public virtual User User { get; set; }
         public virtual Application Application { get; set; }

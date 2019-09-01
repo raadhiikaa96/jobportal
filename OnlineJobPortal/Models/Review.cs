@@ -8,7 +8,7 @@ namespace OnlineJobPortal.Models
     public class Review
     {
         public int ReviewID { get; set; }
-        public string UserID { get; set; }
+        public int UserID { get; set; }
         //public string UserName { get; set; }
         public string CompanyName { get; set; }
         public string Location { get; set; }

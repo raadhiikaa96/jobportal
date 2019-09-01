@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using OnlineJobPortal.DAL;
 using OnlineJobPortal.Models;
 
@@ -25,7 +26,7 @@ namespace OnlineJobPortal.Controllers
         //Registration POST action
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Registration([Bind(Exclude = "IsEmailVerified, ActivationCode")] User user)
+        public ActionResult Registration([Bind(Exclude = "UserID, IsEmailVerified, ActivationCode")] User user)
         {
             bool Status = false;
             string Message = "";
@@ -41,7 +42,7 @@ namespace OnlineJobPortal.Controllers
                     return View(user);
                 }
                 #endregion
-
+                
                 #region Generate Activation Code
                 user.ActivationCode = Guid.NewGuid();
                 #endregion
@@ -53,13 +54,15 @@ namespace OnlineJobPortal.Controllers
                 user.IsEmailVerified = false;
 
                 #region Save to Database
+                //user.UserID = 999;
+                
                 db.Users.Add(user);
                 db.SaveChanges();
 
                 //Send Email to user
                 SendVerificationLink(user.Email, user.ActivationCode.ToString());
                 Message = "Registration successfully done. Account Activation Link" +
-                    "has been sent to your Email Address: " + user.Email;
+                    " has been sent to your Email Address: " + user.Email;
                 Status = true;
                 #endregion
             }
@@ -72,11 +75,82 @@ namespace OnlineJobPortal.Controllers
             //Send Email to user
             return View(user);
         }
-        //Verify Email
-        //Verify Email Link
+        //Verify Account
+        [HttpGet]
+        public ActionResult VerifyAccount (string id)
+        {
+            bool Status = false;
+            db.Configuration.ValidateOnSaveEnabled = false; //to avoid confirm password does not match issue on save changes
+            var v = db.Users.Where(a => a.ActivationCode == new Guid(id)).FirstOrDefault();
+            if(v != null)
+            {
+                v.IsEmailVerified = true;
+                db.SaveChanges();
+                Status = true;
+            }
+            else
+            {
+                ViewBag.Message = "Invalid request!";
+            }
+            ViewBag.Status = Status;
+            return View();
+        }
         //Login
+        [HttpGet]
+        public ActionResult Login()
+        {
+            return View();
+        }
         //Login POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(UserLogin login, string ReturnUrl="")
+        {
+            string Message = "";
+            var v = db.Users.Where(a => a.Email == login.Email).FirstOrDefault();
+            if (v != null)
+            {
+                if (string.Compare(Cryptography.Hash(login.Password), v.Password) == 0)
+                {
+                    int timeout = login.RememberMe ? 525600 : 20; //525600 minutes = 1 year
+                    var ticket = new FormsAuthenticationTicket(login.Email, login.RememberMe, timeout);
+                    string encrypted = FormsAuthentication.Encrypt(ticket);
+                    var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
+                    cookie.Expires = DateTime.Now.AddMinutes(timeout);
+                    cookie.HttpOnly = true;
+                    Response.Cookies.Add(cookie);
+
+                    if (Url.IsLocalUrl(ReturnUrl))
+                    {
+                        //Message = "Invalid Credentials - Email ID or Password doesn't match!";
+                        return Redirect(ReturnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                else
+                {
+                    Message = "Invalid Credentials - Email ID or Password doesn't match!";
+                }
+            }
+            else
+            {
+                Message = "Invalid Credentials - Email ID or Password doesn't match!";
+            }
+
+            ViewBag.Message = Message;
+            return View();
+        }
         //Logout
+        [Authorize]
+        [HttpPost]
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "User");
+        }
         
         [NonAction]
         public bool IsEmailExist(string emailid)
@@ -86,20 +160,33 @@ namespace OnlineJobPortal.Controllers
         }
 
         [NonAction]
-        public void SendVerificationLink(string emailid, string activationcode)
+        public void SendVerificationLink(string emailid, string activationcode, string emailFor = "VerifyAccount")
         {
-            var verifyurl = "/user/VerifyAccount/" + activationcode;
+            var verifyurl = "/User/" + emailFor + "/" + activationcode;
             var link = Request.Url.AbsoluteUri.Replace(Request.Url.PathAndQuery, verifyurl);
 
-            //var fromEmail = new MailAddress("radhika1101gupta@gmail.com", "JobPaanyy");
             var fromEmail = new MailAddress("jobpaanyy@gmail.com", "JobPaanyy");
             var toEmail = new MailAddress(emailid);
             var fromEmailPassword = "JobPaanyy@admin6969";
-            string subject = "Jobpaanyy Account Successfully Created!!";
-
-            string body = "<h2>Welcome to Jobpaanyy.</h2> <br /><br /> Your account is successfully created." +
-                "Please click on the below link to verify your account" +
-                "<br /> <br /><a href ='"+link+"'>"+link+"</a> ";
+            string subject = "";
+            string body = "";
+            if (emailFor == "VerifyAccount")
+            {
+                subject = "Jobpaanyy Account Successfully Created!!";
+                body = "<h2>Welcome to Jobpaanyy.</h2> <br /><br /> Your account is successfully created." +
+                    "Please click on the below link to verify your account" +
+                    "<br /> <br /><a href ='" + link + "'>" + link + "</a>" +
+                    "<br /><br /><br />Regards, <br />Jobpaanyy ";
+            }
+            else if(emailFor == "ResetPassword")
+            {
+                subject = "Reset Password";
+                body = "Hi,<br /><br /> You've just send a request to recover the password of your account in <strong>Jobpaanyy.</strong><br />" +
+                    "If you did not make this request, please ignore this mail; otherwise, please click on the below link to reset your password" +
+                    "<br /><br /><a href="+link+">Reset Password Link</a>" +
+                    "<br /><br /><br />Regards, <br />Jobpaanyy";
+            }
+            
             var smtp = new SmtpClient
             {
                 Host = "smtp.gmail.com",
@@ -117,6 +204,98 @@ namespace OnlineJobPortal.Controllers
             })
                 smtp.Send(Message);
         }
+
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ForgotPassword(string Email)
+        {
+            //Verify Email ID
+            //Generate Reset Password Link
+            //Send Email
+            string Message = "";
+            //bool Status = false;
+
+            var account = db.Users.Where(a => a.Email == Email).FirstOrDefault();
+            if(account != null)
+            {
+                //send Email for reset password
+                string resetCode = Guid.NewGuid().ToString();
+                SendVerificationLink(account.Email, resetCode, "ResetPassword");
+                account.ResetPasswordCode = resetCode;
+                db.Configuration.ValidateOnSaveEnabled = false;
+                db.SaveChanges();
+                Message = "Reset password link has been sent to your Email Account.";
+            }
+            else
+            {
+                Message = "Account not found!";
+            }
+            ViewBag.Message = Message;
+            return View();
+        }
+
+        public ActionResult ResetPassword(string id)
+        {
+            //verify the reset password link
+            //find account associated with this link
+            //redirect to update password page
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return HttpNotFound();
+            }
+            var u = db.Users.Where(a => a.ResetPasswordCode == id).FirstOrDefault();
+            if(u != null)
+            {
+                ResetPassword model = new ResetPassword();
+                model.ResetCode = id;
+                return View(model);
+            }
+            else
+            {
+                return HttpNotFound();
+            }
+            //return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(ResetPassword model)
+        {
+            var Message = "";
+            if (ModelState.IsValid)
+            {
+                var u = db.Users.Where(a => a.ResetPasswordCode == model.ResetCode).FirstOrDefault();
+                if (u != null)
+                {
+                    u.Password = Cryptography.Hash(model.NewPassword);
+                    u.ResetPasswordCode = "";
+                    db.Configuration.ValidateOnSaveEnabled = false;
+                    db.SaveChanges();
+                    Message = "New Password Updated Successfully!";
+                }
+            }
+            else
+            {
+                Message = "Invalid Credentials";
+            }
+            ViewBag.Message = Message;
+            return View(model);
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

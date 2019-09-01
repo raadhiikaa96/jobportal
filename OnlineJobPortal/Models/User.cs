@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OnlineJobPortal.Models
 {
     public partial class User
     {
-        public string UserID { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int UserID { get; set; }
         //public int ReviewID { get; set; }
         //public string ApplicationID { get; set; }
         public string FirstName { get; set; }
@@ -27,6 +31,7 @@ namespace OnlineJobPortal.Models
         public string Role { get; set; }
         public bool IsEmailVerified { get; set; }
         public System.Guid ActivationCode { get; set; }
+        public string ResetPasswordCode { get; set; }
 
         public virtual ICollection<UserToApplication> UserToApplications { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
