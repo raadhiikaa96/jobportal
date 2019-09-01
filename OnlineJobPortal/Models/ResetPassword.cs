@@ -19,7 +19,7 @@ namespace OnlineJobPortal.Models
         [Display(Name = "Confirm Password")]
         [Required(ErrorMessage = "Confirm Password is required!", AllowEmptyStrings = false)]
         [DataType(DataType.Password)]
-        //[Compare("NewPassword", ErrorMessage = "Your password doesn't match with the new password")]
+        [Compare("NewPassword", ErrorMessage = "Your password doesn't match with the new password")]
         [MinLength(6, ErrorMessage = "Password should be 6 character long")]
         public string ConfirmNewPassword { get; set; }
 

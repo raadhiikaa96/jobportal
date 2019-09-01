@@ -26,7 +26,7 @@ namespace OnlineJobPortal.Controllers
         //Registration POST action
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Registration([Bind(Exclude = "UserID, IsEmailVerified, ActivationCode")] User user)
+        public ActionResult Registration([Bind(Exclude = "UserID, IsEmailVerified, ActivationCode, ResetPasswordCode")] User user)
         {
             bool Status = false;
             string Message = "";
@@ -205,6 +205,7 @@ namespace OnlineJobPortal.Controllers
                 smtp.Send(Message);
         }
 
+        [HttpGet]
         public ActionResult ForgotPassword()
         {
             return View();
@@ -217,7 +218,7 @@ namespace OnlineJobPortal.Controllers
             //Generate Reset Password Link
             //Send Email
             string Message = "";
-            //bool Status = false;
+            bool Status = false;
 
             var account = db.Users.Where(a => a.Email == Email).FirstOrDefault();
             if(account != null)
@@ -229,12 +230,14 @@ namespace OnlineJobPortal.Controllers
                 db.Configuration.ValidateOnSaveEnabled = false;
                 db.SaveChanges();
                 Message = "Reset password link has been sent to your Email Account.";
+                //Status = true;
             }
             else
             {
                 Message = "Account not found!";
             }
             ViewBag.Message = Message;
+            //ViewBag.tatus = Status;
             return View();
         }
 
@@ -247,8 +250,8 @@ namespace OnlineJobPortal.Controllers
             {
                 return HttpNotFound();
             }
-            var u = db.Users.Where(a => a.ResetPasswordCode == id).FirstOrDefault();
-            if(u != null)
+            var user = db.Users.Where(a => a.ResetPasswordCode == id).FirstOrDefault();
+            if(user != null)
             {
                 ResetPassword model = new ResetPassword();
                 model.ResetCode = id;
@@ -268,11 +271,11 @@ namespace OnlineJobPortal.Controllers
             var Message = "";
             if (ModelState.IsValid)
             {
-                var u = db.Users.Where(a => a.ResetPasswordCode == model.ResetCode).FirstOrDefault();
-                if (u != null)
+                var user = db.Users.Where(a => a.ResetPasswordCode == model.ResetCode).FirstOrDefault();
+                if (user != null)
                 {
-                    u.Password = Cryptography.Hash(model.NewPassword);
-                    u.ResetPasswordCode = "";
+                    user.Password = Cryptography.Hash(model.NewPassword);
+                    user.ResetPasswordCode = "";
                     db.Configuration.ValidateOnSaveEnabled = false;
                     db.SaveChanges();
                     Message = "New Password Updated Successfully!";
