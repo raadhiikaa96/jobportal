@@ -269,7 +269,7 @@ namespace OnlineJobPortal.Controllers
         public ActionResult ResetPassword(ResetPassword model)
         {
             var Message = "";
-            if (ModelState.IsValid)
+            if (model !=null)
             {
                 var user = db.Users.Where(a => a.ResetPasswordCode == model.ResetCode).FirstOrDefault();
                 if (user != null)

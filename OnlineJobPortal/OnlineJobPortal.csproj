@@ -157,6 +157,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ReviewController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserHomeController.cs" />
     <Compile Include="Cryptography.cs" />
     <Compile Include="DAL\JobContext.cs" />
     <Compile Include="DAL\JobInitializer.cs" />
@@ -164,8 +165,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Application.cs" />
+    <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Extended\User.cs" />
+    <Compile Include="Models\PostJob.cs" />
     <Compile Include="Models\ResetPassword.cs" />
+    <Compile Include="Models\UploadImage.cs" />
     <Compile Include="Models\UserLogin.cs" />
     <Compile Include="Models\UserToApplication.cs" />
     <Compile Include="Models\Review.cs" />
@@ -232,6 +236,16 @@
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\ForgotPassword.cshtml" />
     <Content Include="Views\User\ResetPassword.cshtml" />
+    <Content Include="Views\User\cover.cshtml" />
+    <Content Include="Views\Shared\Home.cshtml" />
+    <Content Include="Views\UserHome\Index.cshtml" />
+    <Content Include="Views\UserHome\Welcome.cshtml" />
+    <Content Include="Views\UserHome\ResumeBuilder.cshtml" />
+    <Content Include="Views\Home\PostJob.cshtml" />
+    <Content Include="Views\UserHome\Jobs.cshtml" />
+    <Content Include="Views\Home\ReviewImage.cshtml" />
+    <Content Include="Views\UserHome\Review.cshtml" />
+    <Content Include="Views\UserHome\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

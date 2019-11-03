@@ -1,0 +1,27 @@
+﻿@model IEnumerable<OnlineJobPortal.Models.UploadImage>
+
+@{
+    ViewBag.Title = "Review";
+    Layout = "~/Views/Shared/Home.cshtml";
+}
+
+<h2>Review</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.ActionLink("Click Here to review", "Details", new { id=item.UploadImageID }) 
+            
+        </td>
+    </tr>
+}
+
+</table>

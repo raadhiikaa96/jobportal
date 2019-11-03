@@ -1,0 +1,54 @@
+﻿@model IEnumerable<OnlineJobPortal.Models.PostJob>
+
+@{
+    ViewBag.Title = "Jobs";
+    Layout = "~/Views/Shared/Home.cshtml";
+}
+
+<h2>Jobs</h2>
+
+<table>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td colspan="4">
+                <h1> @Html.DisplayFor(modelItem => item.CompanyName)</h1>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <small>Location: @Html.DisplayFor(modelItem => item.Location)</small>
+            </td>
+           
+            <td>
+                <small>posted by: @Html.DisplayFor(modelItem => item.PostedBy)</small>
+            </td>
+            
+            <td>
+               <small>on: @Html.DisplayFor(modelItem => item.WhenCreated)</small>
+            </td>
+        </tr>
+
+        <tr>            
+            <td colspan="4">
+                <h3>Job Profile: @Html.DisplayFor(modelItem => item.JobProfile)</h3>
+            </td>
+        </tr>
+
+        <tr>
+            <th colspan="4">
+                <h3>@Html.DisplayNameFor(model => model.Description)</h3>
+            </th>
+            </tr>
+            <tr>
+            <td colspan="4">
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4"><hr style="font-weight:900" /></td>
+        </tr>
+    }
+
+</table>

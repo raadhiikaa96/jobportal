@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Welcome";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body style="background-color:cadetblue;">
+    <div>
+        <img src="~/images/bannerpic.png" style="margin-left:260px;" />
+        <br /><br /><br /><br /><br /><br /><br /><br /><br />
+        <center>
+        <input class="btn btn-default" type="button" value="Welcome!!" 
+               style="height:50px; border:none; color:antiquewhite; width:100px; 
+                background-color:darkslateblue; font-weight:bold; border-radius:3px 4px" 
+               onclick="@("window.location.href='" + @Url.Action("Index", "UserHome") + "'");"/>
+        </center>
+    </div>
+</body>
+</html>

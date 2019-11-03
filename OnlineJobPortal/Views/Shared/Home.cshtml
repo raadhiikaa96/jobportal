@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -16,14 +17,19 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Jobpaanyy", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Jobpaanyy", "Index", "UserHome", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Post Jobs", "Index", "User")</li>
-                    <li>@Html.ActionLink("Post for reviews", "ReviewImage", "UserHome")</li>
-                    @*<li>@Html.ActionLink("Comapny Reviews", "Review", "User")</li>
-                    <li>@Html.ActionLink("Applied Applications", "Index", "Application")</li>*@
+                    <li>@Html.ActionLink("Jobs", "Jobs", "UserHome")</li>
+                    <li>@Html.ActionLink("Review", "Review", "UserHome")</li>
+                    <li>@Html.ActionLink("Build Resume", "ResumeBuilder", "UserHome")</li>
+                    <li>@Html.ActionLink("Interview Questions", "IQ", "UserHome")</li>
+                    </ul>
+                <ul class="nav navbar-nav" style="float:right">
+                    <li>@Html.ActionLink("Signin", "Login", "User")</li>
+                    <li>@Html.ActionLink("Signup", "Registration", "User")</li>
+                    @*<li>@Html.ActionLink("Post Jobs", "Index", "Application")</li>*@
 
                 </ul>
             </div>
